@@ -41,5 +41,7 @@ urlpatterns = [
     path('api/auth/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('api/tracker/', include('tracker.urls')),
+    path('api/education/', include('education.urls')),
 ]
 

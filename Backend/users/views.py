@@ -50,6 +50,7 @@ class LoginView(generics.GenericAPIView):
             return Response({
                 "refresh": str(refresh),
                 "access": access_token,
+                "role": user.role,  
                 "details": UserSerializer(user).data
             })
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -71,5 +72,15 @@ class AdminUserListView(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         if not request.user.is_staff:
             return Response({"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
-        return super().get(request, *args, **kwargs)    
+        return super().get(request, *args, **kwargs) 
+
+
+
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer  # Add this import
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
     

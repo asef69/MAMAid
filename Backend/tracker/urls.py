@@ -1,0 +1,8 @@
+from django.urls import path
+from .views import CycleListCreate, CycleDetail, PregnancyRetrieveUpdate
+
+urlpatterns = [
+    path("cycle/", CycleListCreate.as_view()),
+    path("cycle/<int:pk>/", CycleDetail.as_view()),
+    path("pregnancy/", PregnancyRetrieveUpdate.as_view()),
+]
