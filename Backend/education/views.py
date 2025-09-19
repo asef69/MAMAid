@@ -3,8 +3,9 @@ from rest_framework import generics,status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from .models import BlogPost
-from .serializers import BlogCreateSerializer, BlogListSerializer
+from .serializers import BlogCreateSerializer, BlogListSerializer, BlogPostSerializer
 from .permissions import IsAdminRole
+from tracker.models import Pregnancy
 # Create your views here.
 
 class BlogPublicList(generics.ListAPIView):
@@ -41,3 +42,17 @@ class BlogApprove(generics.UpdateAPIView):
         post.approved = True
         post.save()
         return Response(BlogListSerializer(post).data)
+    
+
+class BlogPostListByPregnancyWeek(generics.ListAPIView):
+    serializer_class = BlogPostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self): # type: ignore
+        pregnancy = Pregnancy.objects.filter(user=self.request.user).first()
+
+        if pregnancy:
+            current_week = pregnancy.current_week
+            return BlogPost.objects.filter(week_number=current_week, approved=True)
+        else:
+            return BlogPost.objects.none()    

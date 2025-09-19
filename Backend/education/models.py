@@ -11,9 +11,10 @@ class BlogPost(models.Model):
     week=models.PositiveIntegerField(help_text="Pregnancy week this post is relevant to")
     approved=models.BooleanField(default=False)
     created_at=models.DateTimeField(auto_now_add=True)
+    week_number=models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering=['-created_at']
 
 
-        
+

@@ -28,17 +28,27 @@ class CycleDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self): # type: ignore
+        if self.request.user.is_anonymous:
+            return Cycle.objects.none()
         return Cycle.objects.filter(user=self.request.user)
     
 
+class PregnancyListCreate(generics.ListCreateAPIView):
+    serializer_class = PregnancySerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self): # type: ignore
+        return Pregnancy.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 class PregnancyRetrieveUpdate(generics.RetrieveUpdateAPIView):
-    serializer_class=PregnancySerializer
-    permission_classes=[IsAuthenticated]
+    serializer_class = PregnancySerializer
+    permission_classes = [IsAuthenticated]
 
     def get_object(self): # type: ignore
-        obj, _ = Pregnancy.objects.get_or_create(user=self.request.user)
-        return obj 
+        obj, created = Pregnancy.objects.get_or_create(user=self.request.user)
+        return obj
 
 class AdminCycleList(generics.ListAPIView):
     serializer_class = CycleSerializer
